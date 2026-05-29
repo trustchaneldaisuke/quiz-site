@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>生成AIパスポート 診断模試 ｜ 第1〜3章</title>
+<title>生成AIパスポートの問題集を作ってみた</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#f4efe4;
-    --paper-2:#efe8d8;
+    --paper:#eef6e4;
+    --paper-2:#e2efd4;
     --ink:#1e1d1a;
     --ink-soft:#5b574d;
     --ink-faint:#8b8576;
@@ -19,8 +19,8 @@
     --ai-soft:#e7ecf3;
     --shu:#c8553d;       /* 朱 */
     --shu-deep:#a23c29;
-    --line:#ddd4c2;
-    --card:#fbf8f1;
+    --line:#cdddb6;
+    --card:#f4fbec;
     --good:#2e7d5b;
     --good-bg:#e6f0ea;
     --bad:#b23b30;
@@ -34,8 +34,8 @@
     color:var(--ink);
     background:var(--paper);
     background-image:
-      radial-gradient(circle at 18% 12%, rgba(31,58,95,.05), transparent 42%),
-      radial-gradient(circle at 88% 88%, rgba(200,85,61,.05), transparent 46%);
+      radial-gradient(circle at 18% 12%, rgba(80,140,60,.06), transparent 42%),
+      radial-gradient(circle at 88% 88%, rgba(130,180,80,.06), transparent 46%);
     background-attachment:fixed;
     line-height:1.7;
     -webkit-font-smoothing:antialiased;
@@ -46,7 +46,7 @@
   /* ---------- header ---------- */
   header{
     position:sticky;top:0;z-index:30;
-    background:rgba(244,239,228,.86);
+    background:rgba(238,246,228,.86);
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
   }
@@ -64,14 +64,7 @@
   .kicker{font-size:12.5px;letter-spacing:.34em;color:var(--shu);font-weight:700;text-indent:.34em;}
   h1.title{font-family:"Shippori Mincho B1",serif;font-weight:800;font-size:34px;line-height:1.3;margin:14px 0 6px;letter-spacing:.01em;}
   .subtitle{color:var(--ink-soft);font-size:14.5px;}
-  .seal{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:64px;height:64px;border-radius:50%;
-    border:2px solid var(--shu);color:var(--shu);
-    font-family:"Shippori Mincho B1",serif;font-weight:800;font-size:24px;
-    margin-bottom:6px;transform:rotate(-4deg);
-  }
-  .meta{
+.meta{
     background:var(--card);border:1px solid var(--line);border-radius:16px;
     padding:20px 22px;margin:26px 0;box-shadow:var(--shadow);
   }
@@ -210,10 +203,10 @@
   <!-- ===== START ===== -->
   <section id="start" class="screen">
     <div class="hero">
-      <div class="seal mincho">診</div>
       <div class="kicker">2026年2月改訂シラバス準拠</div>
-      <h1 class="title">診断模試<br>セット1</h1>
-      <div class="subtitle">第1章〜第3章 ／ 全72問 ／ 四肢択一</div>
+      <h1 class="title">生成AIパスポートの<br>問題集を作ってみた</h1>
+      <div class="subtitle">生成AIパスポート 診断模試 ｜ 第1〜3章</div>
+      <div class="subtitle" style="font-size:13px;margin-top:2px;">第1章〜第3章 ／ 全72問 ／ 四肢択一</div>
     </div>
 
     <div class="meta">
