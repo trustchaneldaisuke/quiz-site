@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>生成AIパスポート 診断模試 ｜ 第1〜3章</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4efe4;
+    --paper-2:#efe8d8;
+    --ink:#1e1d1a;
+    --ink-soft:#5b574d;
+    --ink-faint:#8b8576;
+    --ai:#1f3a5f;        /* 藍 */
+    --ai-deep:#152846;
+    --ai-soft:#e7ecf3;
+    --shu:#c8553d;       /* 朱 */
+    --shu-deep:#a23c29;
+    --line:#ddd4c2;
+    --card:#fbf8f1;
+    --good:#2e7d5b;
+    --good-bg:#e6f0ea;
+    --bad:#b23b30;
+    --bad-bg:#f6e7e4;
+    --shadow:0 1px 2px rgba(30,29,26,.05),0 8px 28px rgba(30,29,26,.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Zen Kaku Gothic New",sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(31,58,95,.05), transparent 42%),
+      radial-gradient(circle at 88% 88%, rgba(200,85,61,.05), transparent 46%);
+    background-attachment:fixed;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:660px;margin:0 auto;padding:0 18px;}
+  .mincho{font-family:"Shippori Mincho B1",serif;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:30;
+    background:rgba(244,239,228,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .hbar{max-width:660px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:12px;}
+  .htitle{font-family:"Shippori Mincho B1",serif;font-weight:700;font-size:15px;letter-spacing:.02em;white-space:nowrap;}
+  .htitle small{color:var(--shu);font-weight:700;margin-left:6px;}
+  .hcount{margin-left:auto;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .hcount b{color:var(--ai);font-weight:700;}
+  .pbar{height:3px;background:var(--line);}
+  .pfill{height:100%;width:0;background:linear-gradient(90deg,var(--ai),var(--shu));transition:width .35s cubic-bezier(.2,.7,.2,1);}
+
+  /* ---------- start ---------- */
+  .screen{padding:28px 0 60px;}
+  .hero{text-align:center;padding:30px 0 8px;}
+  .kicker{font-size:12.5px;letter-spacing:.34em;color:var(--shu);font-weight:700;text-indent:.34em;}
+  h1.title{font-family:"Shippori Mincho B1",serif;font-weight:800;font-size:34px;line-height:1.3;margin:14px 0 6px;letter-spacing:.01em;}
+  .subtitle{color:var(--ink-soft);font-size:14.5px;}
+  .seal{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:64px;height:64px;border-radius:50%;
+    border:2px solid var(--shu);color:var(--shu);
+    font-family:"Shippori Mincho B1",serif;font-weight:800;font-size:24px;
+    margin-bottom:6px;transform:rotate(-4deg);
+  }
+  .meta{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:20px 22px;margin:26px 0;box-shadow:var(--shadow);
+  }
+  .meta h3{font-family:"Shippori Mincho B1",serif;font-size:16px;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+  .meta h3::before{content:"";width:7px;height:18px;background:var(--ai);border-radius:2px;}
+  .mrow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px;}
+  .mrow:last-child{border-bottom:0;}
+  .mrow span:first-child{color:var(--ink-soft);}
+  .mrow span:last-child{font-weight:700;text-align:right;}
+  .note{font-size:12.5px;color:var(--ink-faint);margin-top:14px;line-height:1.65;}
+
+  .btn{
+    display:block;width:100%;border:0;cursor:pointer;
+    font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:16.5px;
+    padding:17px;border-radius:14px;background:var(--ai);color:#fff;
+    box-shadow:0 6px 18px rgba(31,58,95,.28);transition:transform .12s,box-shadow .2s,background .2s;
+    letter-spacing:.04em;
+  }
+  .btn:active{transform:translateY(1px) scale(.995);}
+  .btn.shu{background:var(--shu);box-shadow:0 6px 18px rgba(200,85,61,.28);}
+  .btn.ghost{background:transparent;color:var(--ai);box-shadow:none;border:1.5px solid var(--ai);}
+  .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+
+  /* ---------- quiz ---------- */
+  .qchip{display:inline-block;font-size:12px;font-weight:700;color:var(--ai);background:var(--ai-soft);
+    padding:4px 12px;border-radius:999px;letter-spacing:.05em;}
+  .qno{font-family:"Shippori Mincho B1",serif;font-weight:700;color:var(--ink-faint);font-size:14px;margin-left:10px;}
+  .qtext{font-size:19px;font-weight:500;line-height:1.65;margin:16px 0 22px;letter-spacing:.01em;}
+  .opts{display:flex;flex-direction:column;gap:11px;}
+  .opt{
+    display:flex;align-items:flex-start;gap:13px;text-align:left;width:100%;cursor:pointer;
+    background:var(--card);border:1.5px solid var(--line);border-radius:14px;
+    padding:15px 16px;font-family:inherit;font-size:15.5px;color:var(--ink);line-height:1.55;
+    transition:border-color .15s,background .15s,transform .1s;
+    animation:rise .4s both;
+  }
+  .opt:active{transform:scale(.99);}
+  .opt .mk{
+    flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:var(--paper-2);
+    color:var(--ink-soft);font-family:"Shippori Mincho B1",serif;font-weight:700;font-size:15px;
+    display:flex;align-items:center;justify-content:center;transition:all .15s;
+  }
+  .opt.sel{border-color:var(--ai);background:var(--ai-soft);}
+  .opt.sel .mk{background:var(--ai);color:#fff;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  .qnav{display:flex;gap:10px;margin-top:26px;}
+  .qnav button{
+    flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+    font-family:inherit;font-weight:700;font-size:14.5px;padding:13px;border-radius:12px;cursor:pointer;
+  }
+  .qnav button:active{transform:translateY(1px);}
+  .qnav button.primary{background:var(--ai);color:#fff;border-color:var(--ai);}
+  .qnav button:disabled{opacity:.4;}
+  .palette-btn{margin-top:14px;text-align:center;}
+  .palette-btn button{background:none;border:0;color:var(--ai);font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px;}
+
+  /* ---------- palette sheet ---------- */
+  .sheet-bg{position:fixed;inset:0;background:rgba(30,29,26,.4);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s;}
+  .sheet-bg.on{opacity:1;pointer-events:auto;}
+  .sheet{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--paper);
+    border-radius:22px 22px 0 0;padding:18px 18px 30px;max-width:660px;margin:0 auto;
+    transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.7,.2,1);box-shadow:0 -10px 40px rgba(0,0,0,.18);
+  }
+  .sheet.on{transform:none;}
+  .sheet h4{font-family:"Shippori Mincho B1",serif;font-size:15px;margin:6px 0 14px;text-align:center;}
+  .grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;}
+  .gcell{aspect-ratio:1;border-radius:9px;border:1.5px solid var(--line);background:var(--card);
+    font-family:"Shippori Mincho B1",serf;font-weight:700;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;}
+  .gcell.done{background:var(--ai);color:#fff;border-color:var(--ai);}
+  .gcell.cur{outline:2px solid var(--shu);outline-offset:1px;}
+  .glabel{font-size:11.5px;color:var(--ink-faint);margin:14px 0 6px;font-weight:700;letter-spacing:.08em;}
+
+  /* ---------- results ---------- */
+  .scorewrap{text-align:center;padding:14px 0 4px;}
+  .bignum{font-family:"Shippori Mincho B1",serif;font-weight:800;font-size:58px;line-height:1;color:var(--ai);}
+  .bignum small{font-size:24px;color:var(--ink-faint);}
+  .pct{font-size:17px;font-weight:700;color:var(--shu);margin-top:4px;}
+  .verdict{display:inline-block;margin-top:12px;padding:6px 16px;border-radius:999px;font-size:13px;font-weight:700;}
+  .v-pass{background:var(--good-bg);color:var(--good);}
+  .v-near{background:#f6eedb;color:#a07a18;}
+  .v-low{background:var(--bad-bg);color:var(--bad);}
+
+  .chrow{margin:14px 0;}
+  .chhead{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;}
+  .chhead b{font-weight:700;}
+  .chhead .cs{color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  .track{height:11px;background:var(--paper-2);border-radius:999px;overflow:hidden;border:1px solid var(--line);}
+  .fill{height:100%;width:0;border-radius:999px;transition:width .8s cubic-bezier(.2,.7,.2,1);}
+
+  .export{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:22px 0;box-shadow:var(--shadow);}
+  .export h3{font-family:"Shippori Mincho B1",serif;font-size:15px;margin:0 0 6px;display:flex;align-items:center;gap:8px;}
+  .export h3::before{content:"";width:7px;height:18px;background:var(--shu);border-radius:2px;}
+  .export p{font-size:12.5px;color:var(--ink-soft);margin:0 0 12px;}
+  textarea{width:100%;height:190px;border:1px solid var(--line);border-radius:11px;padding:13px;
+    font-family:ui-monospace,monospace;font-size:12.5px;line-height:1.6;color:var(--ink);background:var(--paper);resize:vertical;}
+
+  details.rev{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:10px 0;overflow:hidden;}
+  details.rev>summary{cursor:pointer;padding:14px 16px;font-weight:700;font-size:14.5px;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+  details.rev>summary::-webkit-details-marker{display:none;}
+  details.rev>summary::after{content:"＋";color:var(--ink-faint);}
+  details.rev[open]>summary::after{content:"−";}
+  .revitem{border-top:1px solid var(--line);padding:13px 16px;font-size:13.5px;}
+  .revq{font-weight:500;margin-bottom:7px;}
+  .revq .tag{font-size:11px;color:var(--ink-faint);font-weight:700;margin-right:6px;}
+  .reva{display:flex;gap:8px;align-items:baseline;padding:2px 0;}
+  .reva .lab{flex:0 0 64px;font-size:11.5px;color:var(--ink-faint);font-weight:700;}
+  .reva.you .val{color:var(--bad);font-weight:700;}
+  .reva.ok .val{color:var(--good);font-weight:700;}
+  .mark{font-weight:800;margin-left:auto;}
+  .mark.o{color:var(--good);}
+  .mark.x{color:var(--bad);}
+
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--paper);padding:11px 22px;border-radius:999px;font-size:13.5px;font-weight:700;
+    opacity:0;pointer-events:none;transition:all .3s;z-index:80;}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--ink-faint);font-size:11.5px;padding:24px 0 40px;}
+</style>
+</head>
+<body>
+
+<header id="hdr" class="hidden">
+  <div class="hbar">
+    <span class="htitle">生成AIパスポート<small>診断模試</small></span>
+    <span class="hcount"><b id="hcur">1</b> / 72</span>
+  </div>
+  <div class="pbar"><div class="pfill" id="pfill"></div></div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===== START ===== -->
+  <section id="start" class="screen">
+    <div class="hero">
+      <div class="seal mincho">診</div>
+      <div class="kicker">2026年2月改訂シラバス準拠</div>
+      <h1 class="title">診断模試<br>セット1</h1>
+      <div class="subtitle">第1章〜第3章 ／ 全72問 ／ 四肢択一</div>
+    </div>
+
+    <div class="meta">
+      <h3>このテストについて</h3>
+      <div class="mrow"><span>出題範囲</span><span>第1章 AI ／ 第2章 生成AI ／ 第3章 動向</span></div>
+      <div class="mrow"><span>問題数</span><span>各章24問・計72問</span></div>
+      <div class="mrow"><span>形式</span><span>四肢択一(タップで解答)</span></div>
+      <div class="mrow"><span>採点</span><span>終了後に章別正答率を表示</span></div>
+      <div class="mrow"><span>合格目安</span><span>本番で正答率70%以上</span></div>
+      <p class="note">※ 選択肢の並び順は毎回ランダムです。<br>※ 解答中に正解は表示されません(診断のため)。<br>※ 終了後、結果を「チャット貼り付け用テキスト」として出力します。コピーして送ると、章別正答率・誤答パターン分析・誤答ログを返します。</p>
+    </div>
+
+    <button class="btn" onclick="startQuiz()">テストを始める</button>
+  </section>
+
+  <!-- ===== QUIZ ===== -->
+  <section id="quiz" class="screen hidden">
+    <div>
+      <span class="qchip" id="qchip">第1章</span>
+      <span class="qno mincho" id="qnoLabel">Q1</span>
+    </div>
+    <div class="qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+
+    <div class="qnav">
+      <button id="prevBtn" onclick="go(-1)">← 前へ</button>
+      <button id="nextBtn" class="primary" onclick="go(1)">次へ →</button>
+    </div>
+    <div class="palette-btn"><button onclick="openSheet()">問題一覧を開く（未回答チェック）</button></div>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section id="result" class="screen hidden">
+    <div class="hero" style="padding-top:10px">
+      <div class="kicker">診断結果</div>
+      <div class="scorewrap">
+        <div class="bignum"><span id="rTotal">0</span><small> / 72</small></div>
+        <div class="pct" id="rPct">0%</div>
+        <div id="rVerdict"></div>
+      </div>
+    </div>
+
+    <div class="meta">
+      <h3>章別正答率</h3>
+      <div id="chBars"></div>
+    </div>
+
+    <div class="export">
+      <h3>結果をチャットに貼り付け</h3>
+      <p>下のテキストをコピーして、学習プロジェクトのチャットに送ってください。誤答パターン分析と誤答ログを作成します。</p>
+      <textarea id="exportText" readonly></textarea>
+      <div style="height:11px"></div>
+      <button class="btn shu" onclick="copyResult()">この内容をコピー</button>
+    </div>
+
+    <details class="rev">
+      <summary>解答を振り返る（全72問）</summary>
+      <div id="reviewList"></div>
+    </details>
+
+    <div style="height:16px"></div>
+    <button class="btn ghost" onclick="location.reload()">もう一度挑戦する</button>
+    <footer>生成AIパスポート 診断模試 ｜ セット1（第1〜3章）</footer>
+  </section>
+
+</div>
+
+<!-- palette sheet -->
+<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <h4>問題一覧</h4>
+  <div class="glabel">タップで移動 ／ 塗りつぶし＝回答済み</div>
+  <div class="grid" id="grid"></div>
+  <div style="height:18px"></div>
+  <button class="btn" id="submitBtn" onclick="submitQuiz()">採点する</button>
+  <div class="note" id="unansNote" style="text-align:center;margin-top:10px"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MARKS = ["ア","イ","ウ","エ"];
+const CHNAME = {1:"第1章 AI(人工知能)",2:"第2章 生成AI",3:"第3章 生成AIの動向"};
+const CHSHORT = {1:"第1章",2:"第2章",3:"第3章"};
+
+/* opts は本来の ア〜エ 順、ans はその中の正解index。表示時にシャッフルする */
+const QDATA = [
+{id:1,ch:1,q:"「AI(人工知能)」という言葉が初めて使われたとされる会議は?",opts:["ジュネーブ会議","ダートマス会議","アシロマ会議","チューリング会議"],ans:1},
+{id:2,ch:1,q:"ルールベースと機械学習の違いとして最も適切なものは?",opts:["ルールベースは大量データから自動でパターンを学習する","機械学習は人間があらかじめ全ての規則を記述する","ルールベースは人間が定めた規則に従って動作し、機械学習はデータからパターンを獲得する","両者に本質的な違いはない"],ans:2},
+{id:3,ch:1,q:"正解のラベルが付いたデータを用いて学習する手法は?",opts:["教師なし学習","強化学習","教師あり学習","クラスタリング"],ans:2},
+{id:4,ch:1,q:"教師なし学習に分類される手法はどれか?",opts:["回帰","クラスタリング","分類","RLHF"],ans:1},
+{id:5,ch:1,q:"報酬を最大化するよう試行錯誤しながら学習する手法は?",opts:["強化学習","半教師あり学習","教師あり学習","転移学習"],ans:0},
+{id:6,ch:1,q:"「あらゆる問題に万能な単一のアルゴリズムは存在しない」ことを示す定理は?",opts:["ベイズの定理","ノーフリーランチ定理","中心極限定理","チューリングの定理"],ans:1},
+{id:7,ch:1,q:"次元削減の主な目的として適切なものは?",opts:["特徴量を増やして表現力を高める","本質的な情報を保ちつつデータの次元を減らして扱いやすくする","正解ラベルを自動付与する","報酬を設計する"],ans:1},
+{id:8,ch:1,q:"人工ニューロン(ノード)が模倣している、脳内で信号を処理する細胞は?",opts:["シナプス","ニューロン","軸索のみ","赤血球"],ans:1},
+{id:9,ch:1,q:"ニューラルネットワークの層を深く重ねた手法を特に何と呼ぶか?",opts:["ディープラーニング(深層学習)","クラスタリング","強化学習","次元削減"],ans:0},
+{id:10,ch:1,q:"ニューラルネットワークにおける「重み」の説明として適切なものは?",opts:["入力データそのものの大きさ","ニューロン間の結合の強さを表す値で、学習により調整される","出力層の個数","学習の繰り返し回数"],ans:1},
+{id:11,ch:1,q:"学習データに過剰に適合し、未知データへの汎化性能が落ちる現象は?",opts:["転移学習","過学習(オーバーフィッティング)","正則化","ドロップアウト"],ans:1},
+{id:12,ch:1,q:"過学習を防ぐための手法として適切でないものはどれか?",opts:["正則化","ドロップアウト","学習データを増やす","学習データだけに徹底的に合わせ込む"],ans:3},
+{id:13,ch:1,q:"学習時にランダムに一部のノードを無効化して過学習を抑える手法は?",opts:["ドロップアウト","正則化","次元削減","クラスタリング"],ans:0},
+{id:14,ch:1,q:"ある課題で学習済みのモデルを、別の関連課題に再利用する手法は?",opts:["強化学習","転移学習","半教師あり学習","教師なし学習"],ans:1},
+{id:15,ch:1,q:"入力データから抽出される、予測や分類の手がかりとなる特徴を表す量は?",opts:["パラメータ","特徴量","報酬","トークン"],ans:1},
+{id:16,ch:1,q:"特定のタスクに特化したAIを指す用語は?",opts:["強いAI(AGI)","弱いAI(ANI)","シンギュラリティ","エキスパートシステム"],ans:1},
+{id:17,ch:1,q:"人間のように幅広い課題へ汎用的に対応できるとされるAIは?",opts:["弱いAI(ANI)","強いAI(AGI)","ルールベース","クラスタリング"],ans:1},
+{id:18,ch:1,q:"第一次AIブームで中心となった技術は?",opts:["エキスパートシステム","ディープラーニング","探索・推論","ビッグデータ"],ans:2},
+{id:19,ch:1,q:"第二次AIブームを象徴する、専門家の知識を規則として組み込んだシステムは?",opts:["エキスパートシステム","ニューラルネットワーク","強化学習","GAN"],ans:0},
+{id:20,ch:1,q:"第三次AIブームを支えた要因として適切なものは?",opts:["探索・推論の発明のみ","ビッグデータと機械学習(ディープラーニング)の発展","エキスパートシステムの普及","ルールベースの完成"],ans:1},
+{id:21,ch:1,q:"AIへの期待が落ち込み、研究投資が停滞した時期を指す表現は?",opts:["AIの冬","AI効果","シンギュラリティ","2045年問題"],ans:0},
+{id:22,ch:1,q:"AIが実現した技術が「単なる自動処理」と見なされ、知能と認められなくなる現象は?",opts:["AI効果","AIの冬","ノーフリーランチ定理","シンギュラリティ"],ans:0},
+{id:23,ch:1,q:"シンギュラリティが2045年に訪れると論じ「2045年問題」を提唱した人物は?",opts:["ヴァーナー・ヴィンジ","レイ・カーツワイル","アラン・チューリング","ジェフリー・ヒントン"],ans:1},
+{id:24,ch:1,q:"AIとロボットの関係の説明として最も適切なものは?",opts:["AIとロボットは同義である","ロボットは必ずAIを搭載している","AIは知能を担う概念、ロボットは物理的な機械であり、両者は別の概念である","AIはロボットの一部品の名称である"],ans:2},
+
+{id:25,ch:2,q:"生成AI(ジェネレーティブAI)の説明として最も適切なものは?",opts:["既存データを分類するだけのAI","テキストや画像など新しいコンテンツを生成するAI","ルールベースのみで動くAI","センサー制御に特化したAI"],ans:1},
+{id:26,ch:2,q:"直前までの出力(系列)をもとに次の要素を順に予測していくモデルの総称は?",opts:["自己回帰モデル","ボルツマンマシン","クラスタリング","エキスパートシステム"],ans:0},
+{id:27,ch:2,q:"主に画像認識で用いられ、畳み込み演算を中心とするニューラルネットワークは?",opts:["RNN","CNN(畳み込みニューラルネットワーク)","VAE","LSTM"],ans:1},
+{id:28,ch:2,q:"VAE(変分自己符号化器)の主要な構成要素の組み合わせは?",opts:["生成器と識別器","エンコーダとデコーダ","Attention層と位置エンコーディング","チャンクとベクトルDB"],ans:1},
+{id:29,ch:2,q:"GAN(敵対的生成ネットワーク)を構成する2つのネットワークは?",opts:["エンコーダとデコーダ","生成器(Generator)と識別器(Discriminator)","隠れ層と出力層","MLMとNSP"],ans:1},
+{id:30,ch:2,q:"時系列・系列データの処理に向き、過去の情報を保持しながら処理するネットワークは?",opts:["CNN","RNN(回帰型ニューラルネットワーク)","VAE","GAN"],ans:1},
+{id:31,ch:2,q:"RNNの長期依存の扱いにくさを改善するために考案されたモデルは?",opts:["LSTM(長・短期記憶)","CNN","GAN","ボルツマンマシン"],ans:0},
+{id:32,ch:2,q:"現在の大規模言語モデルの中核を成す、Attention機構を中心としたアーキテクチャは?",opts:["Transformer","LSTM","VAE","RNN"],ans:0},
+{id:33,ch:2,q:"入力系列の各要素が、同じ系列内の他の要素との関連度を計算する仕組みは?",opts:["自己注意(Self-Attention)","ドロップアウト","次元削減","正則化"],ans:0},
+{id:34,ch:2,q:"Transformerが単語の語順(位置)情報を扱うために加える仕組みは?",opts:["位置エンコーディング","クラスタリング","チャンク化","正則化"],ans:0},
+{id:35,ch:2,q:"GPTモデルを開発した組織は?",opts:["Google","OpenAI","Anthropic","Microsoft"],ans:1},
+{id:36,ch:2,q:"文中の一部の単語をマスクして予測させる事前学習を用いる、双方向の言語モデルは?",opts:["GPT","BERT","LSTM","GAN"],ans:1},
+{id:37,ch:2,q:"BERTを改良した派生モデルの例として適切なものは?",opts:["RoBERTa、ALBERT","Sora、Veo3","GenSpark、Manus","Gemini、Claude"],ans:0},
+{id:38,ch:2,q:"人間のフィードバックを用いた強化学習でモデルの応答を人間の意図に沿わせる手法は?",opts:["RLHF","MLM","ドロップアウト","クラスタリング"],ans:0},
+{id:39,ch:2,q:"AIの出力を人間の価値観や意図に合わせることを指す概念は?",opts:["アライメント(Alignment)","ハルシネーション","ファインチューニング","マルチモーダル"],ans:0},
+{id:40,ch:2,q:"生成AIが事実と異なる内容をもっともらしく出力してしまう現象は?",opts:["ハルシネーション(Hallucination)","アライメント","オーバーフィッティング","ドロップアウト"],ans:0},
+{id:41,ch:2,q:"テキスト・画像・音声など複数種類の情報を統合的に扱える性質を指すのは?",opts:["マルチモーダル","シングルタスク","ゼロショット","チャンク"],ans:0},
+{id:42,ch:2,q:"ChatGPTがコードを実行してデータ分析やファイル処理を行う機能は?",opts:["Code Interpreter","GPTs","RLHF","MLM"],ans:0},
+{id:43,ch:2,q:"ユーザーが目的に応じて独自にカスタマイズして作成できるChatGPTを指すのは?",opts:["GPTs","Code Interpreter","Operator","Sora"],ans:0},
+{id:44,ch:2,q:"テキスト・音声・画像を統合的に扱うマルチモーダルモデルとして提供された「o(omni)」のモデルは?",opts:["GPT-4o","GPT-2","BERT","RoBERTa"],ans:0},
+{id:45,ch:2,q:"OpenAIの「o1・o3・o4」系モデルの主な特徴として適切なものは?",opts:["推論(思考の過程)に重点を置いたモデルである","画像のリサイズ専用である","物理ロボットの制御専用である","暗号化専用である"],ans:0},
+{id:46,ch:2,q:"GPTシリーズに関する記述として適切なものは?",opts:["GPT-1→GPT-2→GPT-3→GPT-3.5→GPT-4→…→GPT-5 と世代を重ねて発展してきた","GPT-5はGPT-1より古いモデルである","GPTは画像分類専用モデルである","GPTはGoogleが開発した"],ans:0},
+{id:47,ch:2,q:"OpenAIのツールに関する説明として正しいものは?",opts:["Operatorは画面操作などのタスクを自律的に代行するエージェントである","Codexは動画を生成するツールである","Image Generationは音声を合成するツールである","SoraはBERTの派生モデルである"],ans:0},
+{id:48,ch:2,q:"対話型生成AIとその提供企業の組み合わせとして正しいものは?",opts:["Gemini=Google、Claude=Anthropic、Copilot=Microsoft","Gemini=Microsoft、Claude=Google、Copilot=OpenAI","Gemini=OpenAI、Claude=Microsoft、Copilot=Google","Gemini=Anthropic、Claude=Google、Copilot=Microsoft"],ans:0},
+
+{id:49,ch:3,q:"次のうちテキスト生成AIに分類されるものは?",opts:["Claude","Sora","Veo3","ディープフェイク"],ans:0},
+{id:50,ch:3,q:"画像生成AIが行う処理として適切なものは?",opts:["テキスト指示などから新しい画像を生成する","表計算を集計する","物理ロボットを制御する","ネットワーク通信を暗号化する"],ans:0},
+{id:51,ch:3,q:"音楽生成AIの説明として適切なものは?",opts:["楽曲やメロディを自動生成する","画像を分類する","文章を翻訳する","在庫を管理する"],ans:0},
+{id:52,ch:3,q:"音声生成AI(音声合成)の用途として適切なものは?",opts:["テキストから人の声のような音声を生成する","画像の解像度を上げる","経路を探索する","暗号鍵を生成する"],ans:0},
+{id:53,ch:3,q:"Googleが提供する動画生成モデルはどれか?",opts:["Veo3","Claude","Copilot","BERT"],ans:0},
+{id:54,ch:3,q:"学習データを変形・加工して件数を水増しする技術(augmentation)を指すのは?",opts:["データ拡張(データの水増し)","正則化","次元削減","クラスタリング"],ans:0},
+{id:55,ch:3,q:"画像データの画素値を一定の範囲(例:0〜1)に揃える前処理は?",opts:["正規化","リサイズ","リマスタリング","水増し"],ans:0},
+{id:56,ch:3,q:"画像のサイズ(縦横の画素数)を変更する処理は?",opts:["リサイズ","正規化","潜在ベクトル化","チャンク化"],ans:0},
+{id:57,ch:3,q:"古い映像・音源などをAIで高品質に作り直す処理を指すのは?",opts:["リマスタリング","クラスタリング","マスキング","アライメント"],ans:0},
+{id:58,ch:3,q:"ディープフェイク(深層偽造)技術の説明として適切なものは?",opts:["AIで本物そっくりの偽の画像・音声・動画を作る技術","暗号通信を行う技術","データを圧縮する技術","検索を高速化する技術"],ans:0},
+{id:59,ch:3,q:"ディープフェイクがもたらす社会的リスクとして最も適切なものは?",opts:["偽情報(ディスインフォメーション)の拡散","通信速度の低下","電力消費の削減","ストレージ容量の増加"],ans:0},
+{id:60,ch:3,q:"ディープフェイクへの対策・心構えとして適切でないものは?",opts:["情報の出所や真偽を確認する","不自然な点がないか検証する","拡散前に裏付けを取る","真偽を確認せず即座に共有する"],ans:3},
+{id:61,ch:3,q:"RAGの正式名称・意味として正しいものは?",opts:["Retrieval-Augmented Generation(検索拡張生成)","Random Access Generation","Recurrent Adversarial Generation","Rule-based Auto Generation"],ans:0},
+{id:62,ch:3,q:"RAGの仕組みの説明として適切なものは?",opts:["モデルのパラメータのみで回答し外部情報は一切使わない","外部の知識源を検索し、取得した情報を踏まえて回答を生成する","画像から音声を生成する","報酬を最大化する強化学習を行う"],ans:1},
+{id:63,ch:3,q:"RAGで、文書を検索しやすいように分割した単位を指すのは?",opts:["チャンク","報酬","潜在ベクトル","ノード"],ans:0},
+{id:64,ch:3,q:"RAGで、テキストを数値ベクトル化して類似検索に用いるデータ基盤は?",opts:["ベクトルデータベース","表計算ソフト","ファイルサーバのみ","キャッシュメモリ"],ans:0},
+{id:65,ch:3,q:"RAGを用いるメリットとして適切なものは?",opts:["最新情報や社内文書を反映でき、ハルシネーションの低減に役立つ","学習データが一切不要になる","モデルが必ず100%正確になる","計算が一切不要になる"],ans:0},
+{id:66,ch:3,q:"RAGのユースケースとして適切なものは?",opts:["社内文書を根拠にした問い合わせ対応(社内ナレッジ検索)","物理ロボットのモーター制御","画像の解像度向上","ネットワークの暗号化"],ans:0},
+{id:67,ch:3,q:"AIエージェントの説明として適切なものは?",opts:["目標達成のため自律的にタスクを計画し、ツールを使って実行するAI","単に一問一答するだけのAI","画像を分類するだけのAI","データを保存するだけのソフト"],ans:0},
+{id:68,ch:3,q:"AIエージェントの動作の仕組みの説明として適切なものは?",opts:["自ら手順を分解し、必要に応じて外部ツールを呼び出して実行する","人間が毎回すべての操作を手動で行う","乱数のみで動作する","学習を一切行わない"],ans:0},
+{id:69,ch:3,q:"AIエージェント(またはそのツール)の例として適切な組み合わせは?",opts:["GenSpark、Manus、Skywork AI","BERT、RoBERTa、ALBERT","VAE、GAN、CNN","MLM、NSP、RLHF"],ans:0},
+{id:70,ch:3,q:"MCP(Model Context Protocol)の説明として適切なものは?",opts:["AIモデルが外部のツールやデータと連携するための標準的な仕組み","画像を圧縮する規格","動画のコーデック","暗号化アルゴリズム"],ans:0},
+{id:71,ch:3,q:"AIエージェントでMCPのような外部連携の仕組みが重要な理由として適切なものは?",opts:["モデル単体では持たない最新データや外部機能を、標準的な方法で利用できるから","計算量をあえて増やすため","モデルを小さくするため","学習を不要にするため"],ans:0},
+{id:72,ch:3,q:"動画生成AIの例として正しい組み合わせは?",opts:["Sora、Veo3","Claude、Gemini","BERT、GPT","GenSpark、Manus"],ans:0}
+];
+
+let Q = [];        // runtime questions with shuffled choices
+let answers = [];  // selected display-index per question (null)
+let cur = 0;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startQuiz(){
+  Q = QDATA.map(d=>{
+    const arr = d.opts.map((t,i)=>({text:t,correct:i===d.ans}));
+    shuffle(arr);
+    return {id:d.id,ch:d.ch,q:d.q,ropts:arr,correctIdx:arr.findIndex(o=>o.correct)};
+  });
+  answers = new Array(Q.length).fill(null);
+  cur = 0;
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  document.getElementById('hdr').classList.remove('hidden');
+  renderQ();
+}
+
+function renderQ(){
+  const q = Q[cur];
+  document.getElementById('qchip').textContent = CHNAME[q.ch];
+  document.getElementById('qnoLabel').textContent = "Q"+(cur+1);
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('hcur').textContent = cur+1;
+  document.getElementById('pfill').style.width = ((cur+1)/Q.length*100)+"%";
+
+  const box = document.getElementById('opts');
+  box.innerHTML = "";
+  q.ropts.forEach((o,i)=>{
+    const b = document.createElement('button');
+    b.className = "opt"+(answers[cur]===i?" sel":"");
+    b.style.animationDelay = (i*0.045)+"s";
+    b.innerHTML = '<span class="mk">'+MARKS[i]+'</span><span>'+o.text+'</span>';
+    b.onclick = ()=>pick(i);
+    box.appendChild(b);
+  });
+  document.getElementById('prevBtn').disabled = (cur===0);
+  const nb = document.getElementById('nextBtn');
+  nb.textContent = (cur===Q.length-1) ? "一覧へ（採点）" : "次へ →";
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pick(i){
+  answers[cur]=i;
+  // 視覚反映
+  document.querySelectorAll('#opts .opt').forEach((el,idx)=>{
+    el.classList.toggle('sel', idx===i);
+  });
+  // 少し見せてから自動で次へ
+  if(cur < Q.length-1){
+    setTimeout(()=>{ cur++; renderQ(); }, 260);
+  } else {
+    setTimeout(openSheet, 260);
+  }
+}
+
+function go(dir){
+  if(dir===1 && cur===Q.length-1){ openSheet(); return; }
+  cur = Math.max(0, Math.min(Q.length-1, cur+dir));
+  renderQ();
+}
+
+/* palette */
+function openSheet(){
+  buildGrid();
+  document.getElementById('sheetBg').classList.add('on');
+  document.getElementById('sheet').classList.add('on');
+}
+function closeSheet(){
+  document.getElementById('sheetBg').classList.remove('on');
+  document.getElementById('sheet').classList.remove('on');
+}
+function buildGrid(){
+  const g = document.getElementById('grid');
+  g.innerHTML="";
+  Q.forEach((q,i)=>{
+    const c = document.createElement('button');
+    c.className = "gcell"+(answers[i]!==null?" done":"")+(i===cur?" cur":"");
+    c.textContent = i+1;
+    c.onclick = ()=>{ cur=i; renderQ(); closeSheet(); };
+    g.appendChild(c);
+  });
+  const un = answers.filter(a=>a===null).length;
+  const note = document.getElementById('unansNote');
+  const sb = document.getElementById('submitBtn');
+  if(un>0){ note.textContent = "未回答が "+un+" 問あります。"; sb.textContent="未回答のまま採点する"; }
+  else { note.textContent = "全問回答済みです。"; sb.textContent="採点する"; }
+}
+
+/* grading */
+function submitQuiz(){
+  closeSheet();
+  const chStat = {1:{c:0,t:0},2:{c:0,t:0},3:{c:0,t:0}};
+  let total=0;
+  Q.forEach((q,i)=>{
+    chStat[q.ch].t++;
+    const a = answers[i];
+    const ok = (a!==null && q.ropts[a].correct);
+    if(ok){ total++; chStat[q.ch].c++; }
+  });
+  // header / total
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('hdr').classList.add('hidden');
+  const res = document.getElementById('result');
+  res.classList.remove('hidden');
+  document.getElementById('rTotal').textContent = total;
+  const pct = Math.round(total/Q.length*100);
+  document.getElementById('rPct').textContent = pct+"%";
+  const v = document.getElementById('rVerdict');
+  if(pct>=70){ v.innerHTML='<span class="verdict v-pass">合格ライン到達（70%以上）</span>'; }
+  else if(pct>=50){ v.innerHTML='<span class="verdict v-near">あと一歩（50〜69%）</span>'; }
+  else { v.innerHTML='<span class="verdict v-low">要対策（50%未満）</span>'; }
+
+  // chapter bars
+  const cb = document.getElementById('chBars');
+  cb.innerHTML="";
+  [1,2,3].forEach(ch=>{
+    const s = chStat[ch];
+    const p = Math.round(s.c/s.t*100);
+    const col = p>=70?"var(--good)":(p>=50?"#c79a2e":"var(--bad)");
+    const row = document.createElement('div');
+    row.className="chrow";
+    row.innerHTML =
+      '<div class="chhead"><b>'+CHNAME[ch]+'</b><span class="cs">'+s.c+'/'+s.t+'（'+p+'%）</span></div>'+
+      '<div class="track"><div class="fill" style="background:'+col+'"></div></div>';
+    cb.appendChild(row);
+    requestAnimationFrame(()=>{ row.querySelector('.fill').style.width = p+"%"; });
+  });
+
+  buildExport(total,pct,chStat);
+  buildReview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildExport(total,pct,chStat){
+  let t = "【生成AIパスポート 診断模試セット1（第1〜3章）結果】\n";
+  t += "総合: "+total+"/72（"+pct+"%）\n";
+  [1,2,3].forEach(ch=>{
+    const s=chStat[ch];
+    t += CHSHORT[ch]+": "+s.c+"/"+s.t+"（"+Math.round(s.c/s.t*100)+"%）\n";
+  });
+  t += "\n■ 誤答（問番号・出題テーマ・選んだ選択肢・正解）\n";
+  let any=false;
+  Q.forEach((q,i)=>{
+    const a=answers[i];
+    const ok=(a!==null && q.ropts[a].correct);
+    if(!ok){
+      any=true;
+      const chosen = (a===null) ? "未回答" : q.ropts[a].text;
+      const correct = q.ropts[q.correctIdx].text;
+      t += "Q"+(i+1)+"("+CHSHORT[q.ch]+") "+q.q+"\n";
+      t += "  選択: "+chosen+"\n";
+      t += "  正解: "+correct+"\n";
+    }
+  });
+  if(!any) t += "（誤答なし・全問正解）\n";
+  document.getElementById('exportText').value = t;
+}
+
+function buildReview(){
+  const list = document.getElementById('reviewList');
+  list.innerHTML="";
+  Q.forEach((q,i)=>{
+    const a=answers[i];
+    const ok=(a!==null && q.ropts[a].correct);
+    const item=document.createElement('div');
+    item.className="revitem";
+    const chosen = (a===null) ? "未回答" : q.ropts[a].text;
+    const correct = q.ropts[q.correctIdx].text;
+    let html = '<div class="revq"><span class="tag">Q'+(i+1)+'・'+CHSHORT[q.ch]+'</span>'+q.q+
+               '<span class="mark '+(ok?'o':'x')+'">'+(ok?'◯':'✕')+'</span></div>';
+    if(!ok){
+      html += '<div class="reva you"><span class="lab">あなた</span><span class="val">'+chosen+'</span></div>';
+    }
+    html += '<div class="reva ok"><span class="lab">正解</span><span class="val">'+correct+'</span></div>';
+    item.innerHTML=html;
+    list.appendChild(item);
+  });
+}
+
+function copyResult(){
+  const ta=document.getElementById('exportText');
+  ta.focus(); ta.select(); ta.setSelectionRange(0,99999);
+  const done=()=>toast('コピーしました');
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(done).catch(()=>{document.execCommand('copy');done();});
+    } else { document.execCommand('copy'); done(); }
+  }catch(e){ document.execCommand('copy'); toast('上のテキストを選択してコピーしてください'); }
+}
+
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('on'),1800);
+}
+</script>
+</body>
+</html>
